@@ -26,8 +26,10 @@ echo
 echo "  Caveat emptor! " 
 echo
 echo "  Do not use this script if you do not understand  " 
-echo " what you are doing. You are responsible if anything "
-echo " breaks in your system (possible!) "
+echo " what you are doing. You are responsible, not me, if anything "
+echo "                 breaks in your system!"
+echo "     (Possible, but actually not very likely, unless this is your "
+echo " absolutely first encounter with Bash scripting or generally GNU/Linux) "
 echo
 echo " OTOH, maybe you could open it in another terminal for "
 echo " perusing each next step before hitting Enter to run "
@@ -37,55 +39,89 @@ echo " faring, are the commands doing the intended and all."
 echo " This is GNU/Linux after all."
 echo
 echo "The script contains some code which is clumsy, but does the work; the"
-echo "following: it is populated with 'read FAKE ;' lines. That is just"
-echo "someone's (mine, who knows no better yet), way to tell you to decide"
+echo "following: it is populated with 'read FAKE ;' lines. That is just my way"
+echo "(I know no better yet) to tell you that you need to decide whether"
 echo "to continue running the script hitting Enter or issue Ctrl-C to kill it."
 echo
-        read FAKE ;
+		read FAKE ;
 echo
 echo "Tell this script what your username is, so we can create the workspace."
 read user ;
 echo "If you are user $user and your homedir is /home/$user/ then this"
-echo "script should work for you. If not, modify the script to suit you."
-        read FAKE ;
+echo "script should work for you. If not, modify the script to suit your needs."
+		read FAKE ;
 echo "We create next two directories in your homedir, 'dLo' for the downloads,"
 echo "and 'src' for the compilation. Will not create them if they exist,"
 echo "but pls. you make sure that nothing in them obstructs this script,"
 echo "meaning, we'll run command:" 
 echo "'mkdir -pv /home/$user/dLo/ /home/$user/src/'"
-echo "A note is due here. If you don't have at least 12GB free in your"
+echo "A note is due here. If you don't have at least around 15GB free in your"
 echo "homedir, you need to modify the script or arrange in some other way such"
 echo "as to make the /home/$user/src a symlink to somewhere with enough room"
 echo "for the compilation"
-        read FAKE ;
+		read FAKE ;
 mkdir -pv /home/$user/dLo/ /home/$user/src/
 echo ; echo ls -l /home/$user/dLo/ /home/$user/src/ ;
 ls -l /home/$user/dLo/ /home/$user/src/
 echo ; echo cd /home/$user/dLo/ ;
-        read FAKE ;
+		read FAKE ;
 cd /home/$user/dLo/ ; pwd ;
 echo "Next the script will ask you to input the no-extension names of grsec"
 echo "patch, linux kernel, and config file."
 echo ""
+echo "For those familiar with the script, there is now the option to give the"
+echo "script three arguments, the first, second, and third corresponding to"
+echo "the explanations below. See the echo'd line after the explanations"
+echo "below."
+echo ""
 echo "Give the name of the grsecurity patch (that we need to get) without"
-echo "extension, such as grsecurity-3.0-3.13.6-201403122116 (as is found on"
+echo "extension, such as grsecurity-3.0-3.15.10-201408140023 (as is found on"
 echo "download page on www.grsecurity.net) :"
-read grsec ;
-echo "Give the name of the kernel (that we need to get) such as linux-3.13.6"
+if [ -n "$1" ]
+	then
+		grsec="$1"
+	else
+		read grsec ;
+fi
+echo "Give the name of the kernel (that we need to get) such as linux-3.15.10"
 echo "as is found for download (or can be guessed from grsecurity patch's"
 echo "name: it is the part of the name after grsecurity-3.0- and before the"
 echo "timestamp in the name, with linux- added in front, in the example name"
-echo "above it is linux-3.13.6, but compare with www.kernel.org) :"
-read kernel ;
-echo "Give the name of the (old) config file (that we need to get) usually the"
-echo "from last compile, from www.croatiafidelis.hr/gnu/deb/, no extension,"
-echo "such as: config-3.13.3-grsec140219-03 (if no more talk on my Debian"
+echo "above it is linux-3.15.10, but compare with www.kernel.org) :"
+if [ -n "$2" ]
+	then
+		kernel="$2"
+	else
+		read kernel ;
+fi
+echo "Give the name of the (old) config file (that we need to get) usually from"
+echo "the last compile, from www.croatiafidelis.hr/gnu/deb/, no extension,"
+echo "such as: config-3.15.5-grsec140723-17 (if no more talk on my Debian"
 echo "Grsec tips page on this, then just try and choose the latest available)"
-read config
+if [ -n "$3" ]
+	then
+		config="$3"
+	else
+		read config ;
+fi
+echo ""
+echo "You may have arrived to the same result here by either following the"
+echo "above slow websites' addresses and file availability checking, or, if"
+echo "you checked those previously, by giving the corresponding three arguments"
+echo "on the command line to this script, i.e.:"
+echo ""
+echo "The command line you would type do this first stretch faster would be"
+echo "similar to this one:"
+echo ""
+echo "./grsec-deb-compile.sh grsecurity-3.0-3.15.10-201408140023 linux-3.15.10 \\"
+echo "    config-3.15.5-grsec140723-17"
+echo ""
+echo "./grsec-deb-compile.sh $grsec $kernel $config"
+echo ""
 echo ; echo "We download next the kernel, the patch, the config to use."
 echo "In case you already did, you'll see info and/or innocuous errors."
 echo "I only want the script to work, can't polish it. Sorry!"
-        read FAKE ;
+		read FAKE ;
 wget -nc https://www.kernel.org/pub/linux/kernel/v3.x/$kernel.tar.sign
 wget -nc https://www.kernel.org/pub/linux/kernel/v3.x/$kernel.tar.xz
 wget -nc https://www.grsecurity.net/test/$grsec.patch.sig
@@ -95,63 +131,63 @@ wget -nc http://www.croatiafidelis.hr/gnu/deb/$config.gz
 
 echo ; echo "Import the necessary keys:"
 echo  "gpg --recv-key 0x2525FE49"
-        read FAKE ;
+		read FAKE ;
 gpg --recv-key 0x2525FE49
 echo  "gpg --recv-key 0x6092693E"
-        read FAKE ;
+		read FAKE ;
 gpg --recv-key 0x6092693E
 
 echo ; echo "Import my key:"
 echo  "gpg --recv-key 0x4FBAF0AE"
-        read FAKE ;
+		read FAKE ;
 gpg --recv-key 0x4FBAF0AE
 
 echo "You can go offline now, internet not needed while compiling."
 echo "I, myself, unplug the connection physically."
 
 echo ; echo "Next, copy all downloads to /home/$user/src/"
-        read FAKE ;
+		read FAKE ;
 cp -iav $kernel.tar.* /home/$user/src/
 cp -iav $grsec.patch* /home/$user/src/
 cp -iav $config* /home/$user/src/
 cd /home/$user/src/ ; pwd
 ls -l $kernel*
-        read FAKE ;
+		read FAKE ;
 echo ; echo unxz $kernel.tar.xz ;
-        read FAKE ; 
- unxz $kernel.tar.xz ;
+		read FAKE ; 
+	unxz $kernel.tar.xz ;
 echo ; echo gpg --verify $kernel.tar.sign ;
-        read FAKE ; 
- gpg --verify $kernel.tar.sign ;
+		read FAKE ; 
+	gpg --verify $kernel.tar.sign ;
 echo ; echo gpg --verify $grsec.patch.sig;
-        read FAKE ; 
- gpg --verify $grsec.patch.sig;
+		read FAKE ; 
+	gpg --verify $grsec.patch.sig;
 echo ; echo gunzip $config.gz;
-        read FAKE ; 
- gunzip $config.gz;
+		read FAKE ; 
+	gunzip $config.gz;
 echo ; echo gpg --verify $config.sig ;
-        read FAKE ; 
- gpg --verify $config.sig ;
+		read FAKE ; 
+	gpg --verify $config.sig ;
 echo ; echo tar xvf $kernel.tar ;
-        read FAKE ; 
- tar xvf $kernel.tar ;
+		read FAKE ; 
+	tar xvf $kernel.tar ;
 echo ; echo cd $kernel;
-        read FAKE ; 
- cd $kernel; pwd
+		read FAKE ; 
+	cd $kernel; pwd
 echo ; echo "patch -p1 < ../$grsec.patch";
-        read FAKE ; 
- patch -p1 < ../$grsec.patch
+		read FAKE ; 
+	patch -p1 < ../$grsec.patch
 echo ; echo "At this point, if you need to, you can possibly apply"
 echo "other patches to this kernel, as well.";
 echo ; echo cd ../;
- cd ../ ; pwd
-        read FAKE ; 
+	cd ../ ; pwd
+		read FAKE ; 
 echo ; echo cp -iav $config $kernel/.config;
-        read FAKE ; 
- cp -iav $config $kernel/.config
+		read FAKE ; 
+	cp -iav $config $kernel/.config
 echo ; echo cd $kernel;
-        read FAKE ; 
- cd $kernel
+		read FAKE ; 
+	cd $kernel
 pwd
 echo ; echo "Here we modify the LOCALVERSION variable to be -YYMMDD-HH"
 locver=`date +%y%m%d-%H`
@@ -167,7 +203,7 @@ grep LOCALVERSION .config
 echo ; echo "And we can also move the backup out of way if it went well."
 mv -vi .config.bak ../ ;
 echo ; echo make menuconfig;
-        read FAKE ; 
+		read FAKE ; 
 echo "If here you will see the script complaining, such as:"
 echo "./grsec-deb-compile.sh: line 125: make: command not found"
 echo "then you need to install the development tools. Don't worry,"
@@ -186,7 +222,7 @@ echo "in the Tip on Debian Forums, or read the script itself at this point."
 # The lines above I won't be checking, since I have dev tools installed.
 # Reports are welcome.
 
- make menuconfig
+	make menuconfig
 echo ; echo "The diff .config below will only show differences if you edited"
 echo "the config through the ncurses menuconfig interface. You may and you may"
 echo "not need to. You may in case, say, you have some exotic hardware and"
@@ -195,29 +231,29 @@ echo "cases, only those that also in non-Grsec kernel you would need to, and"
 echo "those are rare, only where regular Debian kernel which config I base"
 echo "this compile on, would have issues"
 echo diff .config*;
- diff .config*
-        echo
-        echo ; echo "Now this, the next one, can be a longer one step \
-              in the process..."
-        echo
+	diff .config*
+		echo
+		echo ; echo "Now this, the next one, can be a longer one step \
+		      in the process..."
+		echo
 echo ; echo fakeroot make deb-pkg;
-        read FAKE ; 
- fakeroot make deb-pkg
+		read FAKE ; 
+	fakeroot make deb-pkg
 
 
-        echo ; echo "Here, the deb packages ought to be there..."
-        read FAKE ; 
+		echo ; echo "Here, the deb packages ought to be there..."
+		read FAKE ; 
 echo ; echo cd ../ ;
 cd ../ ; pwd ;
-        read FAKE ; 
+		read FAKE ; 
 ls -l *.deb
-        echo ; echo "If you see the packages named linux-XXXXXX-grsec-XXX.deb ,"
-        echo "above and if you already used paxctl on grub binaries as"
-        echo "I took care to explain in detail in my Tips (above or linked"
-        echo "somewhere), you're at your last step."
-        echo ; echo "But, that step you need to execute as root, so it"
-        echo "is not part of this script executed entire as user."
-        read FAKE ; 
+		echo ; echo "If you see the packages named linux-XXXXXX-grsec-XXX.deb ,"
+		echo "above and if you already used paxctl on grub binaries as"
+		echo "I took care to explain in detail in my Tips (above or linked"
+		echo "somewhere), you're at your last step."
+		echo ; echo "But, that step you need to execute as root, so it"
+		echo "is not part of this script executed entire as user."
+		read FAKE ; 
 pwd
 msgbeforeroot1="As root in directory /home/$user/src/ issue this command"
 msgbeforeroot2="dpkg -i *.deb"
@@ -229,7 +265,7 @@ echo "Upon rebooting, you too should get something like I did below:"
 echo "Pls. look up the rest of the script, for that and for a message"
 echo "to users of Debian GNU/Linux"
 # $ uname -a
-# 3.14.2-grsec140430-10
+# 3.1x.x-grsec140xxx-xx # (where x's are, sure some of 0-9)
 # $
 
 # Most of the following text I wrote months ago when I ventured into this.  I
@@ -259,7 +295,7 @@ echo "to users of Debian GNU/Linux"
 # got the brand name of that sh*t correctly), and his life is in real danger.
 #
 # EDIT Tue 20 May 20:29:49 CEST 2014: Marko was freed in May 2014 following
-#	pressure from inside country and the EU
+#    pressure from inside country and the EU
 #
 # You can actually see Marko Francišković's brutal arrest by the police longer
 # ago yet in a video that I linked to from the topic on Grsecurity Forums:
