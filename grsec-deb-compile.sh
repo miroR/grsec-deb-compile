@@ -232,7 +232,7 @@ echo "functionality is later found missing for you. However, only in rare"
 echo "cases, only those that also in non-Grsec kernel you would need to, and"
 echo "those are rare, only where regular Debian kernel which config I base"
 echo "this compile on, would have issues"
-echo diff .config*;
+echo diff .config*; read FAKE ;
 	diff .config*
 		echo
 		echo ; echo "Now this, the next one, can be a longer one step \
