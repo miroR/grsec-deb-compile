@@ -202,8 +202,6 @@ echo ;
 grep LOCALVERSION .config
 echo ; echo "And we can also move the backup out of way if it went well."
 mv -vi .config.bak ../ ;
-echo ; echo make menuconfig;
-		read FAKE ; 
 echo "Next, upon make menuconfig, if you see the script complaining, such as:"
 echo "./grsec-deb-compile.sh: line 125: make: command not found"
 echo "then you need to install the development tools. Don't worry,"
@@ -225,6 +223,7 @@ echo "You might be led to chose from among options for new kernel features if"
 echo "you are using a config from a previous major version. Just take a little"
 echo "time, not too many of those should there be."
 
+echo ; echo make menuconfig; read FAKE ; 
 	make menuconfig
 echo ; echo "The diff .config below will only show differences if you edited"
 echo "the config through the ncurses menuconfig interface. You may and you may"
