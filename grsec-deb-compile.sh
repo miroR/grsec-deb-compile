@@ -204,7 +204,7 @@ echo ; echo "And we can also move the backup out of way if it went well."
 mv -vi .config.bak ../ ;
 echo ; echo make menuconfig;
 		read FAKE ; 
-echo "If here you will see the script complaining, such as:"
+echo "Next, upon make menuconfig, if you see the script complaining, such as:"
 echo "./grsec-deb-compile.sh: line 125: make: command not found"
 echo "then you need to install the development tools. Don't worry,"
 echo "nothing much. Pls. find instructions in some of my previous/later posts"
@@ -221,6 +221,9 @@ echo "in the Tip on Debian Forums, or read the script itself at this point."
 # # apt-get install gcc-4.8-plugin-dev
 # The lines above I won't be checking, since I have dev tools installed.
 # Reports are welcome.
+echo "You might be led to chose from among options for new kernel features if"
+echo "you are using a config from a previous major version. Just take a little"
+echo "time, not too many of those should there be."
 
 	make menuconfig
 echo ; echo "The diff .config below will only show differences if you edited"
